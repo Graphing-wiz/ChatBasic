@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<center>
+
+<div class="chat-popup" id="myForm">
+  <div class="w3-container w3-teal">
+    <center>
+      <h1>Chat</h1>
+    </center>
+  </div>
+    <label for="msg"><b>Message</b></label>
+    <hr>
+    <textarea placeholder="Type message ..." name="msg" id='text' required style='display: inline;'></textarea>
+    <ui id='myList' style='display: inline;'>
+    <li>messages</li>
+    </ui>
+    <br>
+    <label for="id"><b>Name</b></label>
+    <hr>
+    <textarea placeholder="Name ..." name='id' id='id' required></textarea>
+    <br>
+    <hr>
+    <button onclick="submit(true, false)" class="btn">Send</button>
+  </center>
+<script type="text/javascript">
+  window.onload(submit(false, true))
+  function submit(boolean, bool2){
+    var text = document.getElementById('text').value;
+    var id = document.getElementById('id').value;
+    if((text && id) || bool2){
+      if(!bool2){
+        var data = [id, text, boolean, document.baseURI];
+      }else{
+        var data = ['id', 'text', false, document.baseURI];
+      }
+      onmousemove = (event) => {
+        submit(false, true)
+      };
+
+      console.log(data);
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000");
+      xhr.setRequestHeader("Accept", "application/json");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Access-Control-Allow-Origin","*");
+      xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
+      xhr.setRequestHeader("Access-Control-Allow-Methods", "GET");
+      xhr.setRequestHeader("Access-Control-Allow-Headers", "Content-Type");
+      xhr.send(data);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          console.log(xhr.status);
+          if(data[2]){
+            submit(false, false);
+            console.log(xhr.responseText);
+          }else{
+              let root = document.getElementById("myList");
+              while( root.firstChild ){
+  root.removeChild( root.firstChild );
+}
+     let data = JSON.parse(xhr.responseText);
+    data.forEach((item) => {
+      let li = document.createElement("li");
+      li.innerHTML = '<b>'+item.author+'</b>: '+item.content;
+      li.id = data.indexOf(item);
+      li.className = "box";
+      root.appendChild(li);
+      let hr = document.createElement('hr');
+      root.appendChild(hr);
+    });
+            console.log(xhr.responseText)
+            console.log(JSON.parse(xhr.responseText))
+          }
+          
+        }};
+    }else{
+      alert('NO VALUE SPECIFIED!')
+    }
+  }
+</script>
+</div>
+
+<script>
+</script>
+
+</body>
+</html>
